@@ -5,6 +5,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const bgAudio = document.getElementById('bgAudio');
   const bgVideo = document.getElementById('bgVideo');
   const invitationText = document.getElementById('invitationText');
+  const hamburger = document.querySelector('.hamburger');
+  const sideMenu = document.getElementById('sideMenu');
+  const menuOverlay = document.getElementById('menuOverlay');
+  const menuVenue = document.getElementById('menuVenue');
+  const menuAbout = document.getElementById('menuAbout');
+  const closeMenuBtn = document.querySelector('.close-menu');
 
   // Helper function to add animation with promise
   function animateElement(element, animationName, duration) {
@@ -15,6 +21,41 @@ document.addEventListener('DOMContentLoaded', () => {
       }, duration * 1000);
     });
   }
+
+  // Menu functionality
+  function openMenu() {
+    document.body.classList.add('menu-open');
+  }
+
+  function closeMenu() {
+    document.body.classList.remove('menu-open');
+  }
+
+  hamburger.addEventListener('click', (e) => {
+    e.stopPropagation();
+    openMenu();
+  });
+
+  menuOverlay.addEventListener('click', closeMenu);
+
+  closeMenuBtn.addEventListener('click', closeMenu);
+
+  menuVenue.addEventListener('click', () => {
+    closeMenu();
+    window.open('https://www.google.com/maps/place/Random+Location', '_blank');
+  });
+
+  menuAbout.addEventListener('click', () => {
+    closeMenu();
+    window.open('https://raayacreations.onrender.com', '_blank');
+  });
+
+  // Close menu on escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeMenu();
+    }
+  });
 
   // Initial flow
   async function startFlow() {
@@ -65,12 +106,6 @@ document.addEventListener('DOMContentLoaded', () => {
       invitationText.style.display = 'flex';
       invitationText.style.opacity = '1';
     }, 2000);
-  });
-
-  // Venue button click handler
-  const venueButton = document.getElementById('venueButton');
-  venueButton.addEventListener('click', () => {
-    window.location.href = 'https://www.google.com/maps/place/Random+Location';
   });
 
   // Also allow tapMe text to trigger click on image
