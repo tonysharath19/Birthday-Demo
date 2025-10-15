@@ -1,10 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const munchkinText = document.getElementById('munchkinText');
-  const glowImage = document.getElementById('glowImage');
-  const tapMe = document.getElementById('tapMe');
+  const jerryImage = document.getElementById('jerryImage');
+  const cheeseImage = document.getElementById('cheeseImage');
   const bgAudio = document.getElementById('bgAudio');
   const bgVideo = document.getElementById('bgVideo');
-  const invitationText = document.getElementById('invitationText');
+
   const hamburger = document.querySelector('.hamburger');
   const sideMenu = document.getElementById('sideMenu');
   const menuOverlay = document.getElementById('menuOverlay');
@@ -12,32 +11,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const menuAbout = document.getElementById('menuAbout');
   const closeMenuBtn = document.querySelector('.close-menu');
 
-  // Helper function to add animation with promise
-  function animateElement(element, animationName, duration) {
-    return new Promise((resolve) => {
-      element.style.animation = `${animationName} ${duration} forwards`;
-      setTimeout(() => {
-        resolve();
-      }, duration * 1000);
-    });
-  }
+  // ---------- MENU ----------
+  function openMenu() { document.body.classList.add('menu-open'); }
+  function closeMenu() { document.body.classList.remove('menu-open'); }
 
-  // Menu functionality
-  function openMenu() {
-    document.body.classList.add('menu-open');
-  }
-
-  function closeMenu() {
-    document.body.classList.remove('menu-open');
-  }
-
-  hamburger.addEventListener('click', (e) => {
-    e.stopPropagation();
-    openMenu();
-  });
-
+  hamburger.addEventListener('click', (e) => { e.stopPropagation(); openMenu(); });
   menuOverlay.addEventListener('click', closeMenu);
-
   closeMenuBtn.addEventListener('click', closeMenu);
 
   menuVenue.addEventListener('click', () => {
@@ -50,68 +29,121 @@ document.addEventListener('DOMContentLoaded', () => {
     window.open('https://raayacreations.onrender.com', '_blank');
   });
 
-  // Close menu on escape key
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-      closeMenu();
-    }
+    if (e.key === 'Escape') closeMenu();
   });
 
-  // Initial flow
-  async function startFlow() {
-    // 2 second delay for background
-    await new Promise(r => setTimeout(r, 2000));
+  // ---------- DRAGGING (mouse + touch) ----------
+  let isDragging = false;
+  let offsetX = 0, offsetY = 0;
 
-    // Fade in and glow munchkin text for 3s (slower)
-    await animateElement(munchkinText, 'slowFadeInUpGlow', 1);
+  const getEventPosition = (e) => {
+    if (e.touches && e.touches.length > 0) {
+      return { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    }
+    return { x: e.clientX, y: e.clientY };
+  };
 
-    // Make image appear instantly without animation
-    glowImage.style.opacity = '1';
+  const startDrag = (e) => {
+    e.preventDefault();
+    isDragging = true;
+    jerryImage.classList.add('dragging');
 
-    // Show tapMe text and animate hover glow for 2.5s then hide
-    tapMe.style.opacity = '1';
-    tapMe.style.animation = 'hoverGlowRed 2.5s infinite';
-    await new Promise(r => setTimeout(r, 2500));
-    tapMe.style.opacity = '0';
-    tapMe.style.animation = '';
+    const pos = getEventPosition(e);
+    const rect = jerryImage.getBoundingClientRect();
+    offsetX = pos.x - rect.left;
+    offsetY = pos.y - rect.top;
+
+    jerryImage.style.transition = 'none';
+  };
+
+  const moveDrag = (e) => {
+    if (!isDragging) return;
+    e.preventDefault();
+
+    const pos = getEventPosition(e);
+    const x = pos.x - offsetX;
+    const y = pos.y - offsetY;
+
+    jerryImage.style.left = x + 'px';
+    jerryImage.style.top = y + 'px';
+  };
+
+  const endDrag = (e) => {
+    if (!isDragging) return;
+    e.preventDefault();
+    isDragging = false;
+    jerryImage.classList.remove('dragging');
+
+    const jerryRect = jerryImage.getBoundingClientRect();
+    const cheeseRect = cheeseImage.getBoundingClientRect();
+
+    const distance = Math.sqrt(
+      Math.pow(jerryRect.left + jerryRect.width / 2 - (cheeseRect.left + cheeseRect.width / 2), 2) +
+      Math.pow(jerryRect.top + jerryRect.height / 2 - (cheeseRect.top + cheeseRect.height / 2), 2)
+    );
+
+    if (distance < 120) {
+      slideJerryToCheese(jerryRect, cheeseRect);
+    }
+  };
+
+  // Mouse + touch support
+  jerryImage.addEventListener('mousedown', startDrag);
+  document.addEventListener('mousemove', moveDrag);
+  document.addEventListener('mouseup', endDrag);
+  jerryImage.addEventListener('touchstart', startDrag, { passive: false });
+  document.addEventListener('touchmove', moveDrag, { passive: false });
+  document.addEventListener('touchend', endDrag, { passive: false });
+
+  // ---------- SLIDE ----------
+  function slideJerryToCheese(jerryRect, cheeseRect) {
+    const startX = jerryRect.left;
+    const startY = jerryRect.top;
+    const endX = cheeseRect.left + cheeseRect.width / 2 - jerryRect.width / 2;
+    const endY = cheeseRect.top + cheeseRect.height / 2 - jerryRect.height / 2;
+
+    const duration = 800;
+    const startTime = performance.now();
+
+    function animate(time) {
+      const progress = Math.min((time - startTime) / duration, 1);
+      const ease = progress < 0.5
+        ? 2 * progress * progress
+        : -1 + (4 - 2 * progress) * progress;
+
+      const currentX = startX + (endX - startX) * ease;
+      const currentY = startY + (endY - startY) * ease;
+
+      jerryImage.style.left = currentX + 'px';
+      jerryImage.style.top = currentY + 'px';
+
+      if (progress < 1) requestAnimationFrame(animate);
+      else triggerVideo();
+    }
+
+    requestAnimationFrame(animate);
   }
 
-  // Click handler for image
-  glowImage.addEventListener('click', () => {
-    // Stop pulsating animation
-    glowImage.style.animation = '';
+  // ---------- VIDEO ----------
+  function triggerVideo() {
+    document.querySelector('.content').style.display = 'none';
 
-    // Glow pink
-    glowImage.classList.add('glow-pink');
-
-    // Play background audio
     bgAudio.muted = false;
     bgAudio.volume = 1.0;
     bgAudio.play().catch((e) => console.error('Audio play failed:', e));
 
-    // After 2 seconds, show video and invitation text
+    // Stop audio after 30 seconds
     setTimeout(() => {
-      // Hide current content
-      munchkinText.style.display = 'none';
-      tapMe.style.display = 'none';
-      glowImage.style.display = 'none';
+      bgAudio.pause();
+      bgAudio.currentTime = 0;
+    }, 30000);
 
-      // Show and play background video
-      bgVideo.style.display = 'block';
-      bgVideo.muted = false;
-      bgVideo.volume = 1.0;
-      bgVideo.play().catch((e) => console.error('Video play failed:', e));
+    document.getElementById('videoContainer').style.display = 'block';
+    bgVideo.muted = false;
+    bgVideo.volume = 1.0;
+    bgVideo.play().catch((e) => console.error('Video play failed:', e));
 
-      // Show invitation text
-      invitationText.style.display = 'flex';
-      invitationText.style.opacity = '1';
-    }, 2000);
-  });
 
-  // Also allow tapMe text to trigger click on image
-  tapMe.addEventListener('click', () => {
-    glowImage.click();
-  });
-
-  startFlow();
+  }
 });

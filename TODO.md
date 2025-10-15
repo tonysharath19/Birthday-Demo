@@ -1,0 +1,4 @@
+- [x] Update index.html: Replace content div with new text "Move jerry to the cheese for surprise" and add img tags for jerry and cheese with placeholders.
+- [x] Update index.css: Style the new text and images (small size, jerry left, cheese right).
+- [x] Update index.js: Remove old startFlow and click handlers, add drag functionality for jerry image to move towards cheese, detect collision/drop near cheese to play video.
+- [x] Test the drag interaction and video play.

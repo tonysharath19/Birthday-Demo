@@ -1,32 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Birthday Demo</title>
-<link rel="stylesheet" href="index.css" />
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Birthstone+Bounce:wght@400;500&family=DynaPuff:wght@400..700&display=swap" rel="stylesheet" />
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Birthday Demo</title>
+  <link rel="stylesheet" href="index.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Birthstone+Bounce:wght@400;500&family=DynaPuff:wght@400..700&display=swap" rel="stylesheet" />
 </head>
 <body>
   <header>
     <div class="hamburger">☰</div>
-    <div class="header-text">Aditi's 1st Birthday</div>
+    <div class="header-text">Tushar's 2nd Birthday!</div>
   </header>
+
   <div class="content">
-    <div id="munchkinText">Our munchkin just turned </div>
-    <img src="Pics/one.png" alt="Munchkin" id="glowImage" />
-    <div id="tapMe">Tap me</div>
+    <div id="landingText">Move Jerry to the cheese for a surprise!</div>
+    <img src="Pics/jerry.png" alt="Jerry" id="jerryImage" />
+    <img src="Pics/cheese.png" alt="Cheese" id="cheeseImage" />
   </div>
-  <div id="invitationText" class="invitation-text" style="display:none;">
-    <div class="line line1"><br><br>ADITI</div>
-    <div class="line line2">We cordially invite you to her 1st birthday</div>
-    <div class="line line3">Date & Time</div>
-    <div class="line line4">Address</div>
-    <div class="line line5">We look forward to your presence</div>
-  </div>
+
+
+
   <div id="sideMenu" class="side-menu">
     <div class="close-menu">&times;</div>
     <ul>
@@ -35,18 +31,25 @@
     </ul>
   </div>
   <div id="menuOverlay" class="menu-overlay"></div>
+
   <footer>
     <p>&copy; 2025 | All rights reserved</p>
   </footer>
-    
-  <video id="bgVideo" autoplay loop muted playsinline>
-    <source src="Videos/BBEDIT.mp4" type="video/mp4" />
+
+  <!-- Replace your old video tag with this -->
+<div id="videoContainer">
+  <video id="bgVideo" autoplay muted playsinline>
+    <source src="Videos/tushara.mp4" type="video/mp4" />
     Your browser does not support the video tag.
   </video>
-  <audio id="bgAudio" loop>
+</div>
+
+
+  <audio id="bgAudio">
     <source src="Audio/HBD1.mp3" type="audio/mpeg" />
     Your browser does not support the audio element.
   </audio>
+
   <script src="index.js"></script>
 </body>
 </html>
