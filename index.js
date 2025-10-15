@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   menuVenue.addEventListener('click', () => {
     closeMenu();
-    window.open('https://www.google.com/maps/place/Random+Location', '_blank');
+    window.open('https://maps.app.goo.gl/rq9RxQneAw42Njpo8', '_blank');
   });
 
   menuAbout.addEventListener('click', () => {
