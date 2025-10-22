@@ -129,9 +129,12 @@ document.addEventListener('DOMContentLoaded', () => {
   function triggerVideo() {
     document.querySelector('.content').style.display = 'none';
 
-    bgAudio.muted = false;
-    bgAudio.volume = 1.0;
-    bgAudio.play().catch((e) => console.error('Audio play failed:', e));
+    bgAudio.muted = true;
+    bgAudio.volume = 0;
+    bgAudio.play().then(() => {
+      bgAudio.muted = false;
+      bgAudio.volume = 1.0;
+    }).catch((e) => console.error('Audio play failed:', e));
 
     // Stop audio after 30 seconds
     setTimeout(() => {
