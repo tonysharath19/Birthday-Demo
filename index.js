@@ -140,8 +140,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 30000);
 
     document.getElementById('videoContainer').style.display = 'block';
-    bgVideo.muted = false;
-    bgVideo.volume = 1.0;
     bgVideo.play().catch((e) => console.error('Video play failed:', e));
 
 
