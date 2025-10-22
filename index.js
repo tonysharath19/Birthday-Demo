@@ -129,12 +129,23 @@ document.addEventListener('DOMContentLoaded', () => {
   function triggerVideo() {
     document.querySelector('.content').style.display = 'none';
 
-    bgAudio.muted = true;
-    bgAudio.volume = 0;
-    bgAudio.play().then(() => {
+    // Check if it's an Apple device (iOS)
+    const isAppleDevice = /iPad|iPhone|iPod/.test(navigator.userAgent);
+
+    if (isAppleDevice) {
+      // For Apple devices: start muted, then unmute after play starts
+      bgAudio.muted = true;
+      bgAudio.volume = 0;
+      bgAudio.play().then(() => {
+        bgAudio.muted = false;
+        bgAudio.volume = 1.0;
+      }).catch((e) => console.error('Audio play failed:', e));
+    } else {
+      // For other devices: direct unmute and play
       bgAudio.muted = false;
       bgAudio.volume = 1.0;
-    }).catch((e) => console.error('Audio play failed:', e));
+      bgAudio.play().catch((e) => console.error('Audio play failed:', e));
+    }
 
     // Stop audio after 30 seconds
     setTimeout(() => {
